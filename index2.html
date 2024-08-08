@@ -63,10 +63,16 @@
 <body>
 
     <label>Update Cell Data</label> 
+
     <br/>
+
     <textarea id="w3review" name="w3review" rows="4" cols="50"></textarea>
     <br />
     <button onclick="updateCell()" type="button">Submit</button>
+
+    <br />
+    <label>Cell</label>
+    <input id="cell" />
 
     <h2>Previous Submissions</h2>
     <table id="submissionsTable">
@@ -94,46 +100,27 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsonld/1.8.1/jsonld.min.js"></script>
     <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
-    <script>
-        Office.onReady(function (info) {
-            if (info.host === Office.HostType.Excel) {
-                Excel.run(function (context) {
-                    var sheet = context.workbook.worksheets.getActiveWorksheet();
-                    sheet.onSelectionChanged.add(handleSelectionChange);
-                    return context.sync();
-                }).catch(function (error) {
-                    console.error(error);
-                });
-            }
-        });
+  <script>
+  Office.onReady(function (info) {
+  /*    if (info.host === Office.HostType.Excel) {
+        document.getElementById("writeButton").onclick = writeData;
+      } */
+    }); 
 
-        function handleSelectionChange(event) {
-            Excel.run(function (context) {
-                var sheet = context.workbook.worksheets.getActiveWorksheet();
-                var range = sheet.getRange(event.address);
-                range.load("values");
-                return context.sync().then(function () {
-                    if (range.values[0][0]) {
-                        var jsonData = JSON.parse(range.values[0][0]);
-                        populateForm(jsonData);
-                    }
-                });
-            }).catch(function (error) {
-                console.error(error);
-            });
-        }
-
-        function writeData(data) {
-            Excel.run(function (context) {
-                var sheet = context.workbook.worksheets.getActiveWorksheet();
-                var cell = context.workbook.getSelectedRange();
-                cell.values = [[JSON.stringify(data)]];
-                return context.sync();
-            }).catch(function (error) {
-                console.error(error);
-            });
-        }
-
+    function writeData(data) {
+      Excel.run(function (context) {
+        var sheet = context.workbook.worksheets.getActiveWorksheet();
+        var cell = document.getElementById("cell").value
+        var range = sheet.getRange(cell);
+        range.values = [[JSON.stringify(data)]];
+        console.log("test")
+        console.log(data)
+        return context.sync();
+      }).catch(function (error) {
+        console.error(error);
+      });
+    }
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_AUTH_DOMAIN",
@@ -143,6 +130,7 @@
             appId: "YOUR_APP_ID"
         };
 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
@@ -167,7 +155,7 @@
             reader.readAsText(file);
         }
 
-        function updateCell() {
+        function updateCell(event){
             currentFormData = JSON.parse(document.getElementById('w3review').value);
             populateForm(currentFormData);
         }
@@ -258,11 +246,16 @@
             for (const key in data) {
                 const element = document.getElementById(key);
                 if (element) {
+                    console.log(element)
                     element.value = data[key];
+                    console.log(element.value)
+                    console.log(element)
                     const event = new Event('change', { bubbles: true });
                     element.dispatchEvent(event);
+
                 }
             }
+
         }
 
         function exportForm() {
@@ -297,8 +290,10 @@
             });
 
             try {
+                //const docRef = await db.collection('submissions').add(formData);
                 writeData(formData);
-                //addSubmissionToTable(docRef.id, formData);
+		        //addSubmissionToTable(docRef.id, formData);
+		
             } catch (error) {
                 console.error('Error adding document: ', error);
             }
