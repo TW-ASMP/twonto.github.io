@@ -102,7 +102,7 @@
             if (info.host === Office.HostType.Excel) {
                 Excel.run(function (context) {
                     var sheet = context.workbook.worksheets.getActiveWorksheet();
-                    sheet.onDoubleClick.add(handleDoubleClick);
+                    sheet.onSelectionChanged.add(handleSelectionChange);
                     return context.sync();
                 }).catch(function (error) {
                     console.error(error);
@@ -110,7 +110,7 @@
             }
         });
 
-        function handleDoubleClick(event) {
+        function handleSelectionChange(event) {
             Excel.run(function (context) {
                 var sheet = context.workbook.worksheets.getActiveWorksheet();
                 var range = sheet.getRange(event.address);
