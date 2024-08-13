@@ -126,7 +126,7 @@
             if (selectedRange.rowCount === 1 && selectedRange.columnCount === 1) {
                 var row = selectedRange.getRow();
                 var columnMRange = sheet.getRange("M" + (row + 1)); // Get the corresponding value in Column M
-
+		console.log("Column Range", columnMRange)
                 columnMRange.load("values");
 
                 return context.sync().then(function () {
