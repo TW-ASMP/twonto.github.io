@@ -175,6 +175,7 @@
         formContainer.appendChild(title);
 
         const properties = matchingShape['http://www.w3.org/ns/shacl#property'];
+	console.log("matching", matchingShape)
         if (properties) {
             properties.forEach(propertyRef => {
                 const property = expandedShapes.find(node => node['@id'] === propertyRef['@id']);
