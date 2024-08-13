@@ -125,10 +125,11 @@
             // Ensure that the selected range is a single cell
             if (selectedRange.rowCount === 1 && selectedRange.columnCount === 1) {
                 var row = selectedRange.getRow();
+		console.log("row", row)
                 var columnMRange = sheet.getRange("M" + (row + 1)); // Get the corresponding value in Column M
 		console.log("Column Range", columnMRange)
                 columnMRange.load("values");
-
+		console.log("values", columnMRange.values)
                 return context.sync().then(function () {
                     console.log("Column M Value:", columnMRange.values[0][0]);
                     var shapeId = columnMRange.values[0][0];  // Value in column M
