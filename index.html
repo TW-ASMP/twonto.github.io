@@ -157,7 +157,7 @@
 	function renderSpecificShape(shapeIRI) {
     const formsContainer = document.getElementById('forms');
     formsContainer.innerHTML = '';
-
+	console.log("expanded", expandedShapes)
     const matchingShape = expandedShapes.find(node => node['@id'] === shapeIRI);
 
     if (matchingShape) {
