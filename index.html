@@ -110,28 +110,35 @@
             }
         });
 
-        function handleSelectionChange(event) {
-            Excel.run(function (context) {
-                var sheet = context.workbook.worksheets.getActiveWorksheet();
-                var range = sheet.getRange(event.address);
-                var columnMRange = sheet.getRange("M" + range.getRow());
-                
-                range.load("values");
-                columnMRange.load("values");
-                
-                return context.sync().then(function () {
-                    var shapeId = columnMRange.values[0][0];  // Value in column M
-                    if (shapeId && range.values[0][0]) {
-                        var jsonData = JSON.parse(range.values[0][0]);
-                        populateForm(jsonData);
-                        renderSpecificShape(shapeId);
-                    }
-                });
-            }).catch(function (error) {
-                console.error(error);
-            });
-        }
+	function handleSelectionChange(event) {
+    Excel.run(function (context) {
+        var sheet = context.workbook.worksheets.getActiveWorksheet();
+        var selectedRange = sheet.getRange(event.address);
+        
+        // Assuming the event might capture a range of cells, we'll take the first cell only.
+        var firstCell = selectedRange.getCell(0, 0); // Always take the first cell in the selection
+        var row = firstCell.getRow();
+        var columnMRange = sheet.getRange("M" + (row + 1)); // Get the corresponding value in Column M
+        
+        firstCell.load("values");
+        columnMRange.load("values");
 
+        return context.sync().then(function () {
+            var shapeId = columnMRange.values[0][0];  // Value in column M
+            if (shapeId && firstCell.values[0][0]) {
+                var jsonData = JSON.parse(firstCell.values[0][0]);
+                populateForm(jsonData);
+                renderSpecificShape(shapeId);
+            }
+        });
+    }).catch(function (error) {
+        console.error("Error:", error);
+        if (error instanceof OfficeExtension.Error) {
+            console.error("Debug info:", JSON.stringify(error.debugInfo));
+        }
+    });
+}
+	
         function renderSpecificShape(shapeId) {
             const formsContainer = document.getElementById('forms');
             formsContainer.innerHTML = '';
