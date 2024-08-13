@@ -127,7 +127,7 @@
                 var row = selectedRange.getRow();
 		console.log("row", row)
 		console.log("row+1", row + 1)
-		console.log("address", selectedRange.address)
+		console.log("address", "M" + selectedRange.address[-1])
                 var columnMRange = sheet.getRange("M" + (selectedRange.address[-1])); // Get the corresponding value in Column M
 		console.log("Column Range", columnMRange)
                 columnMRange.load(["values"]);
