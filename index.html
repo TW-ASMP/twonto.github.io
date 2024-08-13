@@ -129,9 +129,9 @@
                 var columnMRange = sheet.getRange("M" + (row + 1)); // Get the corresponding value in Column M
 		console.log("Column Range", columnMRange)
                 columnMRange.load("values");
-		console.log("values", columnMRange.values)
+		//console.log("values", columnMRange.values)
                 return context.sync().then(function () {
-                    console.log("Column M Value:", columnMRange.values[0][0]);
+                    console.log("Column M Value:", columnMRange.values);
                     var shapeId = columnMRange.values[0][0];  // Value in column M
                     if (shapeId && selectedRange.values[0][0]) {
                         var jsonData = JSON.parse(selectedRange.values[0][0]);
