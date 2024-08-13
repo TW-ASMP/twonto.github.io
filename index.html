@@ -156,7 +156,8 @@
 
     const matchingShapes = expandedShapes.filter(node => {
         const shapeLabel = node['http://www.w3.org/2000/01/rdf-schema#label']?.[0]?.['@value'].toLowerCase();
-        return shapeLabel.toLowerCase(shapeId.toLowerCase());
+    	return shapeLabel === shapeId.toLowerCase();
+
     });
 
     if (matchingShapes.length > 0) {
