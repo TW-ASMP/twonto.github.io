@@ -110,15 +110,18 @@
             }
         });
 
-        function handleSelectionChange(event) {
+ 	function handleSelectionChange(event) {
     Excel.run(function (context) {
         var sheet = context.workbook.worksheets.getActiveWorksheet();
         var selectedRange = sheet.getRange(event.address);
-        
+
         // Load the properties we need to check if it's a single cell selection
-        selectedRange.load(["rowCount", "columnCount", "values"]);
-        
+        selectedRange.load(["address", "rowCount", "columnCount", "values"]);
+
         return context.sync().then(function () {
+            console.log("Selected Range Address:", selectedRange.address);
+            console.log("Row Count:", selectedRange.rowCount, "Column Count:", selectedRange.columnCount);
+
             // Ensure that the selected range is a single cell
             if (selectedRange.rowCount === 1 && selectedRange.columnCount === 1) {
                 var row = selectedRange.getRow();
@@ -127,9 +130,11 @@
                 columnMRange.load("values");
 
                 return context.sync().then(function () {
+                    console.log("Column M Value:", columnMRange.values[0][0]);
                     var shapeId = columnMRange.values[0][0];  // Value in column M
                     if (shapeId && selectedRange.values[0][0]) {
                         var jsonData = JSON.parse(selectedRange.values[0][0]);
+                        console.log("Loaded JSON Data:", jsonData);
                         populateForm(jsonData);
                         renderSpecificShape(shapeId);
                     }
@@ -140,7 +145,7 @@
         });
     });
 }
- 	
+		
         function renderSpecificShape(shapeId) {
             const formsContainer = document.getElementById('forms');
             formsContainer.innerHTML = '';
