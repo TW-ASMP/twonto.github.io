@@ -131,6 +131,7 @@
                 columnMRange.load("values");
 		//console.log("values", columnMRange.values)
                 return context.sync().then(function () {
+		    console.log("test")
                     console.log("Column M Value:", columnMRange.values);
                     var shapeId = columnMRange.values[0][0];  // Value in column M
                     if (shapeId && selectedRange.values[0][0]) {
