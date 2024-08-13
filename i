@@ -141,10 +141,10 @@
                         console.log("Loaded JSON Data:", jsonData);
                         //populateForm(jsonData);
 			if (shapeId.toLowerCase() === 'boiler') {
-                        	renderSpecificShape('tw:Boiler_defaultShape');
-                    	} else if (shapeId.toLowerCase() === 'motor') {
-                        	renderSpecificShape('tw:Motor_defaultShape');
-                    	}	
+                        renderSpecificShape('tw:Boiler_defaultShape');
+                    } else if (shapeId.toLowerCase() === 'motor') {
+                        renderSpecificShape('tw:Motor_defaultShape');
+                    }	
                     }
                 });
             } else {
