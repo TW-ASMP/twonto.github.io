@@ -134,12 +134,12 @@
         } else {
             console.error("Please select a single cell.");
         }
-    }).catch(function (error) {
+    }); /*.catch(function (error) {
         console.error("Error:", error);
         if (error instanceof OfficeExtension.Error) {
             console.error("Debug info:", JSON.stringify(error.debugInfo));
         }
-    });
+    }); */ 
 }
 	
         function renderSpecificShape(shapeId) {
