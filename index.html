@@ -139,7 +139,7 @@
                     if (shapeId && selectedRange.values[0][0]) {
                         var jsonData = JSON.parse(selectedRange.values[0][0]);
                         console.log("Loaded JSON Data:", jsonData);
-                        populateForm(jsonData);
+                        //populateForm(jsonData);
                         renderSpecificShape(shapeId);
                     }
                 });
@@ -154,7 +154,7 @@
             const formsContainer = document.getElementById('forms');
             formsContainer.innerHTML = '';
 
-            const shape = expandedShapes.find(node => node['@id'] === shapeId);
+            const shape = expandedShapes.find(node => node['@id'].toLowerCase().includes(shapeId));
             if (shape) {
                 const formContainer = document.createElement('div');
                 formContainer.classList.add('form-container');
