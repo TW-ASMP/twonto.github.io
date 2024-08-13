@@ -257,7 +257,8 @@
                     return;
                 }
                 expandedShapes = expanded.filter(node => node['@type'] && node['@type'].includes('http://www.w3.org/ns/shacl#NodeShape'));
-            });
+            	console.log(expanded)
+	    });
         }
 
         function populateForm(data) {
