@@ -150,64 +150,71 @@
     });
 }
 		
-        function renderSpecificShape(shapeId) {
-            const formsContainer = document.getElementById('forms');
-            formsContainer.innerHTML = '';
+	function renderSpecificShape(shapeId) {
+    const formsContainer = document.getElementById('forms');
+    formsContainer.innerHTML = '';
 
-            const shape = expandedShapes.find(node => node['@id'].toLowerCase().includes(shapeId));
-            if (shape) {
-                const formContainer = document.createElement('div');
-                formContainer.classList.add('form-container');
-                const shapeName = shape['http://www.w3.org/2000/01/rdf-schema#label']?.[0]?.['@value'] || shape['@id'];
-                const title = document.createElement('h2');
-                title.textContent = shapeName;
-                formContainer.appendChild(title);
+    const matchingShapes = expandedShapes.filter(node => {
+        const shapeLabel = node['http://www.w3.org/2000/01/rdf-schema#label']?.[0]?.['@value'].toLowerCase();
+        return shapeLabel === shapeId.toLowerCase();
+    });
 
-                const properties = shape['http://www.w3.org/ns/shacl#property'];
-                if (properties) {
-                    properties.forEach(propertyRef => {
-                        const property = expandedShapes.find(node => node['@id'] === propertyRef['@id']);
-                        if (property) {
-                            const path = property['http://www.w3.org/ns/shacl#path']?.[0]?.['@id'] || '';
-                            const name = property['http://www.w3.org/ns/shacl#name']?.[0]?.['@value'] || path;
-                            const formGroup = document.createElement('div');
-                            formGroup.classList.add('form-group');
+    if (matchingShapes.length > 0) {
+        const shape = matchingShapes[0];
+        const formContainer = document.createElement('div');
+        formContainer.classList.add('form-container');
+        const shapeName = shape['http://www.w3.org/2000/01/rdf-schema#label']?.[0]?.['@value'] || shape['@id'];
+        const title = document.createElement('h2');
+        title.textContent = shapeName;
+        formContainer.appendChild(title);
 
-                            const label = document.createElement('label');
-                            label.setAttribute('for', path);
-                            label.textContent = name;
-                            formGroup.appendChild(label);
+        const properties = shape['http://www.w3.org/ns/shacl#property'];
+        if (properties) {
+            properties.forEach(propertyRef => {
+                const property = expandedShapes.find(node => node['@id'] === propertyRef['@id']);
+                if (property) {
+                    const path = property['http://www.w3.org/ns/shacl#path']?.[0]?.['@id'] || '';
+                    const name = property['http://www.w3.org/ns/shacl#name']?.[0]?.['@value'] || path;
+                    const formGroup = document.createElement('div');
+                    formGroup.classList.add('form-group');
 
-                            const shIn = property['http://www.w3.org/ns/shacl#in'];
-                            if (shIn && shIn[0]['@list']) {
-                                const select = document.createElement('select');
-                                select.setAttribute('id', path);
-                                select.setAttribute('name', path);
-                                shIn[0]['@list'].forEach(optionValue => {
-                                    const option = document.createElement('option');
-                                    option.setAttribute('value', optionValue['@value']);
-                                    option.textContent = optionValue['@value'];
-                                    select.appendChild(option);
-                                });
-                                formGroup.appendChild(select);
-                            } else {
-                                const class_name = property['http://www.w3.org/ns/shacl#class']?.[0]?.['@id'] || '';
-                                const input = document.createElement('input');
-                                input.setAttribute('type', 'text');
-                                input.setAttribute('id', class_name);
-                                input.setAttribute('name', class_name);
-                                formGroup.appendChild(input);
-                            }
+                    const label = document.createElement('label');
+                    label.setAttribute('for', path);
+                    label.textContent = name;
+                    formGroup.appendChild(label);
 
-                            formContainer.appendChild(formGroup);
-                        }
-                    });
+                    const shIn = property['http://www.w3.org/ns/shacl#in'];
+                    if (shIn && shIn[0]['@list']) {
+                        const select = document.createElement('select');
+                        select.setAttribute('id', path);
+                        select.setAttribute('name', path);
+                        shIn[0]['@list'].forEach(optionValue => {
+                            const option = document.createElement('option');
+                            option.setAttribute('value', optionValue['@value']);
+                            option.textContent = optionValue['@value'];
+                            select.appendChild(option);
+                        });
+                        formGroup.appendChild(select);
+                    } else {
+                        const class_name = property['http://www.w3.org/ns/shacl#class']?.[0]?.['@id'] || '';
+                        const input = document.createElement('input');
+                        input.setAttribute('type', 'text');
+                        input.setAttribute('id', class_name);
+                        input.setAttribute('name', class_name);
+                        formGroup.appendChild(input);
+                    }
+
+                    formContainer.appendChild(formGroup);
                 }
-
-                formsContainer.appendChild(formContainer);
-            }
+            });
         }
 
+        formsContainer.appendChild(formContainer);
+    } else {
+        formsContainer.innerHTML = `<p>No matching form found for ${shapeId}</p>`;
+    }
+}
+	
         function writeData(data) {
             Excel.run(function (context) {
                 var sheet = context.workbook.worksheets.getActiveWorksheet();
