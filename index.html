@@ -154,26 +154,21 @@
     });
 }
 		
-	function renderSpecificShape(shapeId) {
+	function renderSpecificShape(shapeIRI) {
     const formsContainer = document.getElementById('forms');
     formsContainer.innerHTML = '';
-	console.log(expandedShapes)
-    const matchingShapes = expandedShapes.filter(node => {
-        const shapeLabel = node['http://www.w3.org/2000/01/rdf-schema#label']?.[0]?.['@value'].toLowerCase();
-    	return shapeLabel === shapeId.toLowerCase();
 
-    });
+    const matchingShape = expandedShapes.find(node => node['@id'] === shapeIRI);
 
-    if (matchingShapes.length > 0) {
-        const shape = matchingShapes[0];
+    if (matchingShape) {
         const formContainer = document.createElement('div');
         formContainer.classList.add('form-container');
-        const shapeName = shape['http://www.w3.org/2000/01/rdf-schema#label']?.[0]?.['@value'] || shape['@id'];
+        const shapeName = matchingShape['http://www.w3.org/2000/01/rdf-schema#label']?.[0]?.['@value'] || matchingShape['@id'];
         const title = document.createElement('h2');
         title.textContent = shapeName;
         formContainer.appendChild(title);
 
-        const properties = shape['http://www.w3.org/ns/shacl#property'];
+        const properties = matchingShape['http://www.w3.org/ns/shacl#property'];
         if (properties) {
             properties.forEach(propertyRef => {
                 const property = expandedShapes.find(node => node['@id'] === propertyRef['@id']);
@@ -216,10 +211,9 @@
 
         formsContainer.appendChild(formContainer);
     } else {
-        formsContainer.innerHTML = `<p>No matching form found for ${shapeId}</p>`;
+        formsContainer.innerHTML = `<p>No matching form found for ${shapeIRI}</p>`;
     }
-}
-	
+}		
         function writeData(data) {
             Excel.run(function (context) {
                 var sheet = context.workbook.worksheets.getActiveWorksheet();
