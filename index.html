@@ -188,6 +188,7 @@
 	function populateForm(data) {
 	    console.log("populate", data)
             for (const key in data) {
+		console.log('key', key)
                 const element = document.getElementById(key);
                 if (element) {
 		    console.log("elem", element)
