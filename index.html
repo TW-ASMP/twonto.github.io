@@ -172,9 +172,11 @@
                         columnMRange.load("values");
 
                         return context.sync().then(function () {
+			    var jsonData = JSON.parse(selectedRange.values[0][0]);
                             var assetType = columnMRange.values[0][0].toLowerCase();  // Value in column M
                             var query = constructQuery(assetType === 'motor' ? 'Motor' : 'Boiler');
                             fetchAndRenderShape(query);
+			    populateForm(jsonData)
                         });
                     } else {
                         console.error("Please select a single cell.");
@@ -183,6 +185,16 @@
             });
         }
 
+	function populateForm(data) {
+            for (const key in data) {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.value = data[key];
+                    const event = new Event('change', { bubbles: true });
+                    element.dispatchEvent(event);
+                }
+            }
+        }	
         function renderSpecificShape(shapeIRI) {
             const formsContainer = document.getElementById('forms');
             formsContainer.innerHTML = '';
