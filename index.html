@@ -147,7 +147,7 @@
                     return;
                 }
 		allFiles = expanded
-                expandedShapes = expanded.filter(node => node['@type'] && node['@type'].includes('http://www.w3.org/ns/shacl#NodeShape'));
+                expandedShapes = expanded[0]["@id"] //filter(node => node['@type'] && node['@type'].includes('http://www.w3.org/ns/shacl#NodeShape'));
                 console.log("Expanded SHACL shapes:", expandedShapes);
                 if (expandedShapes.length > 0) {
                     renderSpecificShape(expandedShapes[0]['@id']); // Render the first shape for simplicity
