@@ -105,15 +105,7 @@
             title.textContent = shapeName;
             formContainer.appendChild(title);
 	    console.log(shapeData)
-	    jsonld.expand(shapeData, (err, expanded) => {
-                if (err) {
-                    console.error(err);
-                    return;
-                }
-                console.log(expanded)
-		shapeData = expanded
-            }); 
-            const properties = shapeData['http://www.toronto.ca/TWONTO#shortcutsTo'];
+            const properties = shapeData['tw:shortcutsTo'];
             if (properties) {
                 properties.forEach(property => {
                     const path = property['http://www.w3.org/ns/shacl#path']?.[0]?.['@id'] || '';
