@@ -201,6 +201,7 @@
                 if (properties) {
                     properties.forEach(propertyRef => {
                         const property = allFiles.find(node => node['@id'] === propertyRef['@id']);
+			console.log(property)
                         if (property) {
                             const path = property['http://www.w3.org/ns/shacl#path']?.[0]?.['@id'] || '';
                             const name = property['http://www.w3.org/ns/shacl#name']?.[0]?.['@value'] || path;
