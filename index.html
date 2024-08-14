@@ -198,6 +198,7 @@
                 formContainer.appendChild(title);
 
                 const properties = matchingShape['http://www.toronto.ca/TWONTO#shortcutsTo'];
+		console.log(properties)
                 if (properties) {
                     properties.forEach(propertyRef => {
                         const property = allFiles.find(node => node['@id'] === propertyRef['@id']);
