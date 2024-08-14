@@ -155,7 +155,7 @@
             });
         }
 
-        function handleSelectionChange(event) {
+        async function handleSelectionChange(event) {
             Excel.run(function (context) {
                 var sheet = context.workbook.worksheets.getActiveWorksheet();
                 var selectedRange = sheet.getRange(event.address);
@@ -175,7 +175,7 @@
 			    var jsonData = JSON.parse(selectedRange.values[0][0]);
                             var assetType = columnMRange.values[0][0].toLowerCase();  // Value in column M
                             var query = constructQuery(assetType === 'motor' ? 'Motor' : 'Boiler');
-                            fetchAndRenderShape(query);
+                            await fetchAndRenderShape(query);
 			    populateForm(jsonData)
                         });
                     } else {
@@ -186,7 +186,7 @@
         }
 
 	function populateForm(data) {
-	    console.log(data)
+	    console.log("populate", data)
             for (const key in data) {
                 const element = document.getElementById(key);
                 if (element) {
