@@ -155,7 +155,7 @@
             });
         }
 
-        async function handleSelectionChange(event) {
+        function handleSelectionChange(event) {
             Excel.run(function (context) {
                 var sheet = context.workbook.worksheets.getActiveWorksheet();
                 var selectedRange = sheet.getRange(event.address);
@@ -175,8 +175,9 @@
 			    var jsonData = JSON.parse(selectedRange.values[0][0]);
                             var assetType = columnMRange.values[0][0].toLowerCase();  // Value in column M
                             var query = constructQuery(assetType === 'motor' ? 'Motor' : 'Boiler');
-                            await fetchAndRenderShape(query);
-			    populateForm(jsonData)
+                            fetchAndRenderShape(query).then(function(){
+				populateForm(jsonData)
+			    })
                         });
                     } else {
                         console.error("Please select a single cell.");
