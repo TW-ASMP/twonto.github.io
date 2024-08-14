@@ -108,8 +108,8 @@
             const properties = shapeData['tw:shortcutsTo'];
             if (properties) {
                 properties.forEach(property => {
-                    const path = property['http://www.w3.org/ns/shacl#path']?.[0]?.['@id'] || '';
-                    const name = property['http://www.w3.org/ns/shacl#name']?.[0]?.['@value'] || path;
+                    const path = property['sh:path']?.[0]?.['@id'] || '';
+                    const name = property['sh:name']?.[0]?.['@value'] || path;
                     const formGroup = document.createElement('div');
                     formGroup.classList.add('form-group');
 
@@ -118,7 +118,7 @@
                     label.textContent = name;
                     formGroup.appendChild(label);
 
-                    const shIn = property['http://www.w3.org/ns/shacl#in'];
+                    const shIn = property['sh:in'];
                     let inputElement;
                     if (shIn && shIn[0]['@list']) {
                         inputElement = document.createElement('select');
