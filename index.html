@@ -125,7 +125,7 @@
             });
 
             const ttlData = await response.text();
-
+	    console.log(ttlData)
             jsonld.fromRDF(ttlData, { format: 'text/turtle' }, (err, jsonldData) => {
                 if (err) {
                     console.error("Error converting TTL to JSON-LD:", err);
