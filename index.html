@@ -78,7 +78,7 @@
             });
 
             const ttlData = await response.text();
-	    const jsonld = ttl2jsonld.parse(ttl);
+	    const jsonld = ttl2jsonld.parse(ttlData);
 	    loadElemStructure(jsonld, assetType);
         }
 
