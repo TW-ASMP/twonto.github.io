@@ -66,6 +66,7 @@
     </div>
 
     <script>
+	let allFile = []
         function constructQuery(assetType) {
             let baseQuery = `
                 CONSTRUCT {
@@ -145,6 +146,7 @@
                     console.error("Error parsing SHACL data:", err);
                     return;
                 }
+		allFiles = expanded
                 expandedShapes = expanded.filter(node => node['@type'] && node['@type'].includes('http://www.w3.org/ns/shacl#NodeShape'));
                 console.log("Expanded SHACL shapes:", expandedShapes);
                 if (expandedShapes.length > 0) {
@@ -198,7 +200,7 @@
                 const properties = matchingShape['http://www.w3.org/ns/shacl#property'];
                 if (properties) {
                     properties.forEach(propertyRef => {
-                        const property = expandedShapes.find(node => node['@id'] === propertyRef['@id']);
+                        const property = allFiles.find(node => node['@id'] === propertyRef['@id']);
                         if (property) {
                             const path = property['http://www.w3.org/ns/shacl#path']?.[0]?.['@id'] || '';
                             const name = property['http://www.w3.org/ns/shacl#name']?.[0]?.['@value'] || path;
