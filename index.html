@@ -197,7 +197,7 @@
                 title.textContent = shapeName;
                 formContainer.appendChild(title);
 
-                const properties = matchingShape['http://www.w3.org/ns/shacl#property'];
+                const properties = matchingShape['http://www.toronto.ca/TWONTO#shortcutsTo'];
                 if (properties) {
                     properties.forEach(propertyRef => {
                         const property = allFiles.find(node => node['@id'] === propertyRef['@id']);
