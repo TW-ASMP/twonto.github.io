@@ -147,10 +147,10 @@
                     return;
                 }
 		allFiles = expanded
-                expandedShapes = expanded[0]["@id"] //filter(node => node['@type'] && node['@type'].includes('http://www.w3.org/ns/shacl#NodeShape'));
+                expandedShapes = expanded[0] //filter(node => node['@type'] && node['@type'].includes('http://www.w3.org/ns/shacl#NodeShape'));
                 console.log("Expanded SHACL shapes:", expandedShapes);
                 if (expandedShapes.length > 0) {
-                    renderSpecificShape(expandedShapes[0]['@id']); // Render the first shape for simplicity
+                    renderSpecificShape(expandedShapes["@id"]); // Render the first shape for simplicity
                 }
             });
         }
@@ -187,12 +187,12 @@
             const formsContainer = document.getElementById('forms');
             formsContainer.innerHTML = '';
 
-            const matchingShape = expandedShapes.find(node => node['@id'] === shapeIRI);
+            const matchingShape = expandedShapes //.find(node => node['@id'] === shapeIRI);
 
             if (matchingShape) {
                 const formContainer = document.createElement('div');
                 formContainer.classList.add('form-container');
-                const shapeName = matchingShape['http://www.w3.org/2000/01/rdf-schema#label']?.[0]?.['@value'] || matchingShape['@id'];
+                const shapeName = matchingShape['http//www.w3.org/2000/01/rdf-schema#label']?.[0]?.['@value'] || matchingShape['@id'];
                 const title = document.createElement('h2');
                 title.textContent = shapeName;
                 formContainer.appendChild(title);
