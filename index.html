@@ -131,7 +131,7 @@
             const jsonldData = ttl2jsonld.parse(ttlData);
 	    parseSHACL(jsonldData).then(function(){
 		populateForm(jsonD)
-	    }
+	    })
 	    console.log(jsonldData)
 	    /*jsonld.fromRDF(ttlData, { format: 'text/turtle' }, (err, jsonldData) => {
                 if (err) {
