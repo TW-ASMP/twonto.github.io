@@ -68,7 +68,7 @@
         let currentCell = null;
 
         async function fetchAndRenderShape(query, assetType) {
-            const response = await fetch(`http://ec2-3-96-163-179.ca-central-1.compute.amazonaws.com:12110/datastores/motor%20and%20boiler/sparql?query=${encodeURIComponent(query)}`, {
+            const response = await fetch(`https://cors-everywhere-wc8b4.ondigitalocean.app/http://ec2-3-96-163-179.ca-central-1.compute.amazonaws.com:12110/datastores/motor%20and%20boiler/sparql?query=${encodeURIComponent(query)}`, {
                 method: 'GET',
                 headers: {
                     'Accept': 'text/turtle'
