@@ -194,6 +194,7 @@
 		    console.log("elem", element)
                     element.value = data[key];
                     const event = new Event('change', { bubbles: true });
+		    console.log('value', element.value)
                     element.dispatchEvent(event);
                 }
             }
