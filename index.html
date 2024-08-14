@@ -129,8 +129,9 @@
             const ttlData = await response.text();
 	    console.log(ttlData)
             const jsonldData = ttl2jsonld.parse(ttlData);
-	    parseSHACL(jsonldData);
-	    populateForm(jsonD)
+	    parseSHACL(jsonldData).then(function(){
+		populateForm(jsonD)
+	    }
 	    console.log(jsonldData)
 	    /*jsonld.fromRDF(ttlData, { format: 'text/turtle' }, (err, jsonldData) => {
                 if (err) {
