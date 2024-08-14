@@ -188,7 +188,7 @@
             formsContainer.innerHTML = '';
 
             const matchingShape = expandedShapes //.find(node => node['@id'] === shapeIRI);
-
+	    console.log("expanded", expandedShapes)
             if (matchingShape) {
                 const formContainer = document.createElement('div');
                 formContainer.classList.add('form-container');
