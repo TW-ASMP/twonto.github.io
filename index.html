@@ -129,6 +129,7 @@
 	    console.log(ttlData)
             const jsonldData = ttl2jsonld.parse(ttlData);
 	    parseSHACL(jsonldData);
+	    console.log(jsonldData)
 	    /*jsonld.fromRDF(ttlData, { format: 'text/turtle' }, (err, jsonldData) => {
                 if (err) {
                     console.error("Error converting TTL to JSON-LD:", err);
