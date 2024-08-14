@@ -55,6 +55,8 @@
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsonld/1.8.1/jsonld.min.js"></script>
     <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script src="https://frogcat.github.io/ttl2jsonld/ttl2jsonld.js"></script>
+
 </head>
 <body>
     <div id="forms"></div>
@@ -76,15 +78,8 @@
             });
 
             const ttlData = await response.text();
-
-            jsonld.fromRDF(ttlData, { format: 'text/turtle' }, (err, jsonldData) => {
-                if (err) {
-                    console.error("Error converting TTL to JSON-LD:", err);
-                    return;
-                }
-                // Load the structure from elem.jsonld
-                loadElemStructure(jsonldData, assetType);
-            });
+	    const jsonld = ttl2jsonld.parse(ttl);
+	    loadElemStructure(jsonld, assetType);
         }
 
         function loadElemStructure(jsonldData, assetType) {
