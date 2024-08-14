@@ -84,7 +84,8 @@
 
         function loadElemStructure(jsonldData, assetType) {
             const shapeIRI = assetType === 'motor' ? 'tw:Motor_defaultShape' : 'tw:Boiler_defaultShape';
-            const shapeData = jsonldData.find(node => node['@id'] === shapeIRI);
+            console.log(jsonldData)
+	    //const shapeData = jsonldData.find(node => node['@id'] === shapeIRI);
 
             if (shapeData) {
                 renderSpecificShape(shapeData);
