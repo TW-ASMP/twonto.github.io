@@ -105,6 +105,14 @@
             title.textContent = shapeName;
             formContainer.appendChild(title);
 	    console.log(shapeData)
+	    jsonld.expand(shapeData, (err, expanded) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                console.log(expanded)
+		shapeData = expanded
+            }); 
             const properties = shapeData['http://www.toronto.ca/TWONTO#shortcutsTo'];
             if (properties) {
                 properties.forEach(property => {
