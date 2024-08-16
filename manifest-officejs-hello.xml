@@ -20,7 +20,7 @@
     <Host Name="Workbook" />
   </Hosts>
   <DefaultSettings>
-    <SourceLocation DefaultValue="https://tw-asmp.github.io/twonto.github.io" />
+    <SourceLocation DefaultValue="http://ec2-3-96-163-179.ca-central-1.compute.amazonaws.com/twonto.github.io/index.html" />
   </DefaultSettings>
   <Permissions>ReadWriteDocument</Permissions>
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
