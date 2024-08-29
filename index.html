@@ -97,7 +97,6 @@
     <script>
         let currentFormData = {};
         let expandedShapes = [];
-	let allFields = [];
 
         Office.onReady(function (info) {
             if (info.host === Office.HostType.Excel) {
@@ -110,118 +109,87 @@
                 });
             }
         });
-	document.addEventListener("DOMContentLoaded", function() {
-            document.getElementById('fileInput').addEventListener('change', handleFileSelect, false);
-            document.getElementById('formFileInput').addEventListener('change', handleFormFileSelect, false);
-            document.getElementById('submitButton').addEventListener('click', submitForm, false);
-            document.getElementById('exportButton').addEventListener('click', exportForm, false);
-            document.getElementById('exportExcelButton').addEventListener('click', exportTableToExcel, false);
-        });
- 	function handleSelectionChange(event) {
-    Excel.run(function (context) {
-        var sheet = context.workbook.worksheets.getActiveWorksheet();
-        var selectedRange = sheet.getRange(event.address);
 
-        // Load the properties we need to check if it's a single cell selection
-        selectedRange.load(["address", "rowCount", "columnCount", "values"]);
-
-        return context.sync().then(function () {
-            console.log("Selected Range Address:", selectedRange.address);
-            console.log("Row Count:", selectedRange.rowCount, "Column Count:", selectedRange.columnCount);
-
-            // Ensure that the selected range is a single cell
-            if (selectedRange.rowCount === 1 && selectedRange.columnCount === 1) {
-                var row = selectedRange.getRow();
-		console.log("row", row)
-		console.log("row+1", row + 1)
-		console.log("address", "M" + selectedRange.address[7])
-                var columnMRange = sheet.getRange("M" + (selectedRange.address[7])); // Get the corresponding value in Column M
-		console.log("Column Range", columnMRange)
-                columnMRange.load(["values"]);
-		//console.log("values", columnMRange.values)
+        function handleSelectionChange(event) {
+            Excel.run(function (context) {
+                var sheet = context.workbook.worksheets.getActiveWorksheet();
+                var range = sheet.getRange(event.address);
+                var columnMRange = sheet.getRange("M" + range.getRow());
+                
+                range.load("values");
+                columnMRange.load("values");
+                
                 return context.sync().then(function () {
-		    console.log("test")
-                    console.log("Column M Value:", columnMRange.values);
                     var shapeId = columnMRange.values[0][0];  // Value in column M
-                    if (shapeId && selectedRange.values[0][0]) {
-                        var jsonData = JSON.parse(selectedRange.values[0][0]);
-                        console.log("Loaded JSON Data:", jsonData);
-                        //populateForm(jsonData);
-			if (shapeId.toLowerCase() === 'boiler') {
-                        	renderSpecificShape("http://www.toronto.ca/TWONTO#Boiler_defaultShape");
-                    	} else if (shapeId.toLowerCase() === 'motor') {
-                        	renderSpecificShape("http://www.toronto.ca/TWONTO#Motor_defaultShape");
-                    	}	
+                    if (shapeId && range.values[0][0]) {
+                        var jsonData = JSON.parse(range.values[0][0]);
+                        populateForm(jsonData);
+                        renderSpecificShape(shapeId);
                     }
                 });
-            } else {
-                console.error("Please select a single cell.");
-            }
-        });
-    });
-}
-		
-	function renderSpecificShape(shapeIRI) {
-    const formsContainer = document.getElementById('forms');
-    formsContainer.innerHTML = '';
-	console.log("expanded", expandedShapes)
-    const matchingShape = expandedShapes.find(node => node['@id'] === shapeIRI);
-
-    if (matchingShape) {
-        const formContainer = document.createElement('div');
-        formContainer.classList.add('form-container');
-        const shapeName = matchingShape['http://www.w3.org/2000/01/rdf-schema#label']?.[0]?.['@value'] || matchingShape['@id'];
-        const title = document.createElement('h2');
-        title.textContent = shapeName;
-        formContainer.appendChild(title);
-
-        const properties = matchingShape['http://www.w3.org/ns/shacl#property'];
-	console.log("matching", matchingShape)
-        if (properties) {
-            properties.forEach(propertyRef => {
-                const property = allFields.find(node => node['@id'] === propertyRef['@id']);
-                if (property) {
-                    const path = property['http://www.w3.org/ns/shacl#path']?.[0]?.['@id'] || '';
-                    const name = property['http://www.w3.org/ns/shacl#name']?.[0]?.['@value'] || path;
-                    const formGroup = document.createElement('div');
-                    formGroup.classList.add('form-group');
-
-                    const label = document.createElement('label');
-                    label.setAttribute('for', path);
-                    label.textContent = name;
-                    formGroup.appendChild(label);
-
-                    const shIn = property['http://www.w3.org/ns/shacl#in'];
-                    if (shIn && shIn[0]['@list']) {
-                        const select = document.createElement('select');
-                        select.setAttribute('id', path);
-                        select.setAttribute('name', path);
-                        shIn[0]['@list'].forEach(optionValue => {
-                            const option = document.createElement('option');
-                            option.setAttribute('value', optionValue['@value']);
-                            option.textContent = optionValue['@value'];
-                            select.appendChild(option);
-                        });
-                        formGroup.appendChild(select);
-                    } else {
-                        const class_name = property['http://www.w3.org/ns/shacl#class']?.[0]?.['@id'] || '';
-                        const input = document.createElement('input');
-                        input.setAttribute('type', 'text');
-                        input.setAttribute('id', class_name);
-                        input.setAttribute('name', class_name);
-                        formGroup.appendChild(input);
-                    }
-
-                    formContainer.appendChild(formGroup);
-                }
+            }).catch(function (error) {
+                console.error(error);
             });
         }
 
-        formsContainer.appendChild(formContainer);
-    } else {
-        formsContainer.innerHTML = `<p>No matching form found for ${shapeIRI}</p>`;
-    }
-}		
+        function renderSpecificShape(shapeId) {
+            const formsContainer = document.getElementById('forms');
+            formsContainer.innerHTML = '';
+
+            const shape = expandedShapes.find(node => node['@id'] === shapeId);
+            if (shape) {
+                const formContainer = document.createElement('div');
+                formContainer.classList.add('form-container');
+                const shapeName = shape['http://www.w3.org/2000/01/rdf-schema#label']?.[0]?.['@value'] || shape['@id'];
+                const title = document.createElement('h2');
+                title.textContent = shapeName;
+                formContainer.appendChild(title);
+
+                const properties = shape['http://www.w3.org/ns/shacl#property'];
+                if (properties) {
+                    properties.forEach(propertyRef => {
+                        const property = expandedShapes.find(node => node['@id'] === propertyRef['@id']);
+                        if (property) {
+                            const path = property['http://www.w3.org/ns/shacl#path']?.[0]?.['@id'] || '';
+                            const name = property['http://www.w3.org/ns/shacl#name']?.[0]?.['@value'] || path;
+                            const formGroup = document.createElement('div');
+                            formGroup.classList.add('form-group');
+
+                            const label = document.createElement('label');
+                            label.setAttribute('for', path);
+                            label.textContent = name;
+                            formGroup.appendChild(label);
+
+                            const shIn = property['http://www.w3.org/ns/shacl#in'];
+                            if (shIn && shIn[0]['@list']) {
+                                const select = document.createElement('select');
+                                select.setAttribute('id', path);
+                                select.setAttribute('name', path);
+                                shIn[0]['@list'].forEach(optionValue => {
+                                    const option = document.createElement('option');
+                                    option.setAttribute('value', optionValue['@value']);
+                                    option.textContent = optionValue['@value'];
+                                    select.appendChild(option);
+                                });
+                                formGroup.appendChild(select);
+                            } else {
+                                const class_name = property['http://www.w3.org/ns/shacl#class']?.[0]?.['@id'] || '';
+                                const input = document.createElement('input');
+                                input.setAttribute('type', 'text');
+                                input.setAttribute('id', class_name);
+                                input.setAttribute('name', class_name);
+                                formGroup.appendChild(input);
+                            }
+
+                            formContainer.appendChild(formGroup);
+                        }
+                    });
+                }
+
+                formsContainer.appendChild(formContainer);
+            }
+        }
+
         function writeData(data) {
             Excel.run(function (context) {
                 var sheet = context.workbook.worksheets.getActiveWorksheet();
@@ -264,10 +232,8 @@
                     console.error(err);
                     return;
                 }
-		allFields = expanded;
                 expandedShapes = expanded.filter(node => node['@type'] && node['@type'].includes('http://www.w3.org/ns/shacl#NodeShape'));
-            	console.log(expanded)
-	    });
+            });
         }
 
         function populateForm(data) {
