@@ -165,7 +165,7 @@
                 const properties = shape['http://www.w3.org/ns/shacl#property'];
                 if (properties) {
                     properties.forEach(propertyRef => {
-                        const property = allFieldss.find(node => node['@id'] === propertyRef['@id']);
+                        const property = allFields.find(node => node['@id'] === propertyRef['@id']);
                         if (property) {
                             const path = property['http://www.w3.org/ns/shacl#path']?.[0]?.['@id'] || '';
                             const name = property['http://www.w3.org/ns/shacl#name']?.[0]?.['@value'] || path;
