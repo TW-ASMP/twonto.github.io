@@ -117,12 +117,11 @@
 		var selectedRange = sheet.getRange(event.address)
                	selectedRange.load(["address", "rowCount", "columnCount", "values"]); 
                 range.load("values");
-                columnMRange.load("values");
-                
+		var columnMRange = sheet.getRange("M" + (selectedRange.address[7]))
+	        columnMRange.load("values");
                 return context.sync().then(function () {
                     var shapeId = columnMRange.values[0][0];  // Value in column 
-		    var columnMRange = sheet.getRange("M" + (selectedRange.address[7]))
-                    if (shapeId && range.values[0][0]) {
+		    if (shapeId && range.values[0][0]) {
                         var jsonData = JSON.parse(range.values[0][0]);
                         populateForm(jsonData);
                         renderSpecificShape(shapeId);
