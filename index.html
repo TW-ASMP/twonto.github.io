@@ -147,6 +147,7 @@
             formsContainer.innerHTML = '';
 
             const shape = expandedShapes.find(node => node['@id'] === shapeId);
+	    console.log('shape', shape)
             if (shape) {
                 const formContainer = document.createElement('div');
                 formContainer.classList.add('form-container');
