@@ -109,7 +109,13 @@
                 });
             }
         });
-
+	document.addEventListener("DOMContentLoaded", function() {
+			                document.getElementById('fileInput').addEventListener('change', handleFileSelect, false);
+			                document.getElementById('formFileInput').addEventListener('change', handleFormFileSelect, false);
+			                document.getElementById('submitButton').addEventListener('click', submitForm, false);
+			                document.getElementById('exportButton').addEventListener('click', exportForm, false);
+			                document.getElementById('exportExcelButton').addEventListener('click', exportTableToExcel, false);
+	})
         function handleSelectionChange(event) {
             Excel.run(function (context) {
                 var sheet = context.workbook.worksheets.getActiveWorksheet();
@@ -243,6 +249,7 @@
                     console.error(err);
                     return;
                 }
+		console.log('expanded', expanded)
                 expandedShapes = expanded.filter(node => node['@type'] && node['@type'].includes('http://www.w3.org/ns/shacl#NodeShape'));
             });
         }
