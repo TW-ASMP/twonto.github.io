@@ -126,6 +126,7 @@
 			console.log("Shape ID", shapeId)
 		    	if (shapeId) {
                         	var jsonData = JSON.parse(selectedRange.values[0][0]);
+				console.log('json data', jsonData)
 				if (shapeId.toLowerCase() === 'boiler') {
                                		renderSpecificShape("http://www.toronto.ca/TWONTO#Boiler_defaultShape");
                         	} else if (shapeId.toLowerCase() === 'motor') {
