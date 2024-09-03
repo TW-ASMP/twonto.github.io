@@ -124,8 +124,13 @@
                     	var shapeId = columnMRange.values[0][0];  // Value in column 
 		    	if (shapeId && range.values[0][0]) {
                         	var jsonData = JSON.parse(range.values[0][0]);
+				if (shapeId.toLowerCase() === 'boiler') {
+                               		renderSpecificShape("http://www.toronto.ca/TWONTO#Boiler_defaultShape");
+                        	} else if (shapeId.toLowerCase() === 'motor') {
+                                	renderSpecificShape("http://www.toronto.ca/TWONTO#Motor_defaultShape");
+                        	}		
                         	populateForm(jsonData);
-                        	renderSpecificShape(shapeId);
+                        	//renderSpecificShape(shapeId);
                     }
                 });
 				});
