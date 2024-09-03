@@ -120,8 +120,10 @@
                 	range.load("values");
 			var columnMRange = sheet.getRange("M" + (selectedRange.address[7]))
 	        	columnMRange.load("values");
+			console.log(columnMRange)
                 	return context.sync().then(function () {
                     	var shapeId = columnMRange.values[0][0];  // Value in column 
+			console.log("Shape ID", shapeId)
 		    	if (shapeId && range.values[0][0]) {
                         	var jsonData = JSON.parse(range.values[0][0]);
 				if (shapeId.toLowerCase() === 'boiler') {
