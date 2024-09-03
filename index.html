@@ -121,7 +121,7 @@
                 
                 return context.sync().then(function () {
                     var shapeId = columnMRange.values[0][0];  // Value in column 
-		    var columnMRange = sheet.getRange("M" + selectedRange.address[7])M
+		    var columnMRange = sheet.getRange("M" + (selectedRange.address[7]))
                     if (shapeId && range.values[0][0]) {
                         var jsonData = JSON.parse(range.values[0][0]);
                         populateForm(jsonData);
