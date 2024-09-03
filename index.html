@@ -124,8 +124,8 @@
                 	return context.sync().then(function () {
                     	var shapeId = columnMRange.values[0][0];  // Value in column 
 			console.log("Shape ID", shapeId)
-		    	if (shapeId && range.values[0][0]) {
-                        	var jsonData = JSON.parse(range.values[0][0]);
+		    	if (shapeId) {
+                        	var jsonData = JSON.parse(selectedRange.values[0][0]);
 				if (shapeId.toLowerCase() === 'boiler') {
                                		renderSpecificShape("http://www.toronto.ca/TWONTO#Boiler_defaultShape");
                         	} else if (shapeId.toLowerCase() === 'motor') {
