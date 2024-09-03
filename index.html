@@ -114,6 +114,7 @@
             Excel.run(function (context) {
                 var sheet = context.workbook.worksheets.getActiveWorksheet();
                 var range = sheet.getRange(event.address);
+		var selectedRange = sheet.getRange(event.address)
                 var columnMRange = sheet.getRange("M" + selectedRange.address[7]);
                 
                 range.load("values");
