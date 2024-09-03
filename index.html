@@ -115,13 +115,13 @@
                 var sheet = context.workbook.worksheets.getActiveWorksheet();
                 var range = sheet.getRange(event.address);
 		var selectedRange = sheet.getRange(event.address)
-                var columnMRange = sheet.getRange("M" + selectedRange.address[7]);
-                
+               	selectedRange.load(["address", "rowCount", "columnCount", "values"]); 
                 range.load("values");
                 columnMRange.load("values");
                 
                 return context.sync().then(function () {
-                    var shapeId = columnMRange.values[0][0];  // Value in column M
+                    var shapeId = columnMRange.values[0][0];  // Value in column 
+		    var columnMRange = sheet.getRange("M" + selectedRange.address[7])M
                     if (shapeId && range.values[0][0]) {
                         var jsonData = JSON.parse(range.values[0][0]);
                         populateForm(jsonData);
