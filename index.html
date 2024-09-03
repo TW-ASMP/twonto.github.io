@@ -115,19 +115,21 @@
                 var sheet = context.workbook.worksheets.getActiveWorksheet();
                 var range = sheet.getRange(event.address);
 		var selectedRange = sheet.getRange(event.address)
-               	selectedRange.load(["address", "rowCount", "columnCount", "values"]); 
-                range.load("values");
-		var columnMRange = sheet.getRange("M" + (selectedRange.address[7]))
-	        columnMRange.load("values");
-                return context.sync().then(function () {
-                    var shapeId = columnMRange.values[0][0];  // Value in column 
-		    if (shapeId && range.values[0][0]) {
-                        var jsonData = JSON.parse(range.values[0][0]);
-                        populateForm(jsonData);
-                        renderSpecificShape(shapeId);
+               	selectedRange.load(["address", "rowCount", "columnCount", "values"]);
+		return context.sync().then(function () {
+                	range.load("values");
+			var columnMRange = sheet.getRange("M" + (selectedRange.address[7]))
+	        	columnMRange.load("values");
+                	return context.sync().then(function () {
+                    	var shapeId = columnMRange.values[0][0];  // Value in column 
+		    	if (shapeId && range.values[0][0]) {
+                        	var jsonData = JSON.parse(range.values[0][0]);
+                        	populateForm(jsonData);
+                        	renderSpecificShape(shapeId);
                     }
                 });
-            }).catch(function (error) {
+				});
+            	}).catch(function (error) {
                 console.error(error);
             });
         }
