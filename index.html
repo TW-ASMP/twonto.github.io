@@ -97,7 +97,7 @@
     <script>
         let currentFormData = {};
         let expandedShapes = [];
-
+	let allFields = [];
         Office.onReady(function (info) {
             if (info.host === Office.HostType.Excel) {
                 Excel.run(function (context) {
@@ -165,7 +165,7 @@
                 const properties = shape['http://www.w3.org/ns/shacl#property'];
                 if (properties) {
                     properties.forEach(propertyRef => {
-                        const property = expandedShapes.find(node => node['@id'] === propertyRef['@id']);
+                        const property = allFieldss.find(node => node['@id'] === propertyRef['@id']);
                         if (property) {
                             const path = property['http://www.w3.org/ns/shacl#path']?.[0]?.['@id'] || '';
                             const name = property['http://www.w3.org/ns/shacl#name']?.[0]?.['@value'] || path;
@@ -249,6 +249,7 @@
                     console.error(err);
                     return;
                 }
+		allFields = expanded;
 		console.log('expanded', expanded)
                 expandedShapes = expanded.filter(node => node['@type'] && node['@type'].includes('http://www.w3.org/ns/shacl#NodeShape'));
             });
