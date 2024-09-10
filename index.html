@@ -215,8 +215,8 @@
         	        	                select2.setAttribute('name', path + "uom");
                         	   	    	lst.forEach(optionValue => {
                                 	    		const option = document.createElement('option');
-                                    			option.setAttribute('value', optionValue['@value']);
-                                    			option.textContent = optionValue['@value'];
+                                    			option.setAttribute('value', optionValue);
+                                    			option.textContent = optionValue
                                     			select2.appendChild(option);
                              
 						});
