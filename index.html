@@ -199,8 +199,27 @@
                                 input.setAttribute('name', class_name);
                                 formGroup.appendChild(input);
 				if (property['http://www.w3.org/ns/shacl#node']?.[0]?.['@id']){
-					console.log(property['http://www.w3.org/ns/shacl#node']?.[0]?.['@id'])
-				}
+						var type1 = property['http://www.w3.org/ns/shacl#node']?.[0]?.['@id']
+						var lst = []
+						if (type1 == "http://www.toronto.ca/TWONTO#surfaceAreaSpec_nodeShape"){
+							lst = [ "cm^2", "mile^2", "m^2", "km^2", "inch^2", "ft^2"] 
+						} else if (type1 == "http://www.toronto.ca/TWONTO#temperatureSpec_nodeShape"){
+							lst = ["degC", "degK", "degF"]
+						} else if (type1 == "http://www.toronto.ca/TWONTO#holdingCapacitySpec_nodeShape"){
+							lst = ["ft^3","L","m^3"]
+						} else if (type 1 == "http://www.toronto.ca/TWONTO#pressureSpec_nodeShape"){
+							lst = ["bar", "psi", "kPa"]
+						}
+						const select2 = document.createElement('select');
+	        	                        select2.setAttribute('id', path + "uom");
+        	        	                select2.setAttribute('name', path + "uom");
+                        	   	    	lst.forEach(optionValue => {
+                                	    		const option = document.createElement('option');
+                                    			option.setAttribute('value', optionValue['@value']);
+                                    			option.textContent = optionValue['@value'];
+                                    			select2.appendChild(option);
+                                		});
+                                		formGroup.appendChild(select2);	
                             }
 
                             formContainer.appendChild(formGroup);
