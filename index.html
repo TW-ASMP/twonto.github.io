@@ -210,6 +210,7 @@
 						} else if (type1 == "http://www.toronto.ca/TWONTO#pressureSpec_nodeShape"){
 							lst = ["bar", "psi", "kPa"]
 						}
+						
 						const select2 = document.createElement('select');
 	        	                        select2.setAttribute('id', path + "uom");
         	        	                select2.setAttribute('name', path + "uom");
@@ -220,8 +221,9 @@
                                     			select2.appendChild(option);
                              
 						});
-
-                                		formGroup.appendChild(select2);	
+						if (lst.length > 0){
+                                			formGroup.appendChild(select2);	
+						}
                            	} 
 			   }
 
