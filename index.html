@@ -61,45 +61,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 </head>
 <body>
-    <!--
-    <label>Update Cell Data</label> 
-    <br/>
-    <textarea id="w3review" name="w3review" rows="4" cols="50"></textarea>
-    <br />
-    <button onclick="updateCell()" type="button">Submit</button>
-
-    <h2>Previous Submissions</h2>
-    <table id="submissionsTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>JSON</th>
-            </tr>
-        </thead>
-        <tbody>
-            Table rows will be inserted here dynamically
-        </tbody>
-    </table> -->
-
     <div id="forms"></div>
-
 
     <div class="buttons">
         <button id="submitButton">Submit Form</button>
         <button id="exportButton">Export Completed Form</button>
         <button id="exportExcelButton">Export Table to Excel</button>
     </div>
- 
+
     <input type="file" id="fileInput" accept=".jsonld" />
     <input type="file" id="formFileInput" accept=".json" />
-
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsonld/1.8.1/jsonld.min.js"></script>
     <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
     <script>
         let currentFormData = {};
         let expandedShapes = [];
-	let allFields = [];
+        let allFields = [];
+
         Office.onReady(function (info) {
             if (info.host === Office.HostType.Excel) {
                 Excel.run(function (context) {
@@ -111,153 +90,88 @@
                 });
             }
         });
-	document.addEventListener("DOMContentLoaded", function() {
-			                document.getElementById('fileInput').addEventListener('change', handleFileSelect, false);
-			                document.getElementById('formFileInput').addEventListener('change', handleFormFileSelect, false);
-			                document.getElementById('submitButton').addEventListener('click', submitForm, false);
-			                document.getElementById('exportButton').addEventListener('click', exportForm, false);
-			                document.getElementById('exportExcelButton').addEventListener('click', exportTableToExcel, false);
-	})
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById('fileInput').addEventListener('change', handleFileSelect, false);
+            document.getElementById('formFileInput').addEventListener('change', handleFormFileSelect, false);
+            document.getElementById('submitButton').addEventListener('click', submitForm, false);
+            document.getElementById('exportButton').addEventListener('click', exportForm, false);
+            document.getElementById('exportExcelButton').addEventListener('click', exportTableToExcel, false);
+        });
+
         function handleSelectionChange(event) {
             Excel.run(function (context) {
                 var sheet = context.workbook.worksheets.getActiveWorksheet();
-                var range = sheet.getRange(event.address);
-		var selectedRange = sheet.getRange(event.address)
-               	selectedRange.load(["address", "rowCount", "columnCount", "values"]);
-		return context.sync().then(function () {
-                	range.load("values");
-			var columnMRange = sheet.getRange("M" + (selectedRange.address[7]))
-	        	columnMRange.load("values");
-			console.log(columnMRange)
-                	return context.sync().then(function () {
-                    	var shapeId = columnMRange.values[0][0];  // Value in column 
-			console.log("Shape ID", shapeId)
-		    	if (shapeId) {
-                        	var jsonData = JSON.parse(selectedRange.values[0][0]);
-				console.log('json data', jsonData)
-				if (shapeId.toLowerCase() === 'boiler') {
-                               		renderSpecificShape("http://www.toronto.ca/TWONTO#Boiler_defaultShape");
-                        	} else if (shapeId.toLowerCase() === 'motor') {
-                                	renderSpecificShape("http://www.toronto.ca/TWONTO#Motor_defaultShape");
-                        	} else if (shapeId.toLowerCase() === 'UPS') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#UPS_defaultShape");
-                        	} else if (shapeId.toLowerCase() === 'generator') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#Generator_defaultShape");
-                        	} else if (shapeId.toLowerCase() === 'compressor') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#Compressor_defaultShape");
-                        	}				
-				else if (shapeId.toLowerCase() === 'blower') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#Blower_defaultShape");
-                        	}
-				else if (shapeId.toLowerCase() === 'HVAC') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#HVAC_defaultShape");
-                        	}
-				else if (shapeId.toLowerCase() === 'transformer') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#transformer_defaultShape");
-                        	}
-				else if (shapeId.toLowerCase() === 'starter') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#Starter_defaultShape");
-                        	}
-				else if (shapeId.toLowerCase() === 'valve') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#Valve_defaultShape");
-                        	}
-				else if (shapeId.toLowerCase() === 'pump') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#PumpSet_defaultShape");
-                        	}
-                        	populateForm(jsonData);
-                        	//renderSpecificShape(shapeId);
+                var selectedRange = sheet.getRange(event.address);
+                selectedRange.load(["address", "rowCount", "columnCount", "values"]);
+                return context.sync().then(function () {
+                    var rowNumber = selectedRange.address.match(/\d+/)[0];
+                    
+                    if (selectedRange.address.match(/^X/)) {
+                        var columnXCell = sheet.getRange("X" + rowNumber);
+                        var columnMCell = sheet.getRange("M" + rowNumber);
+                        columnXCell.load("values");
+                        columnMCell.load("values");
+
+                        return context.sync().then(function () {
+                            var shapeId = columnMCell.values[0][0];
+
+                            if (!columnXCell.values[0][0] && shapeId) {
+                                var newJsonObject = createNewJsonObject(shapeId);
+                                columnXCell.values = [[JSON.stringify(newJsonObject)]];
+                                return context.sync();
+                            }
+                        });
                     }
                 });
-				});
-            	}).catch(function (error) {
+            }).catch(function (error) {
                 console.error(error);
             });
         }
 
-        function renderSpecificShape(shapeId) {
-            const formsContainer = document.getElementById('forms');
-            formsContainer.innerHTML = '';
-	    console.log('expanded', expandedShapes)
-            const shape = expandedShapes.find(node => node['@id'] === shapeId);
-	    console.log('shape', shape)
-            if (shape) {
-                const formContainer = document.createElement('div');
-                formContainer.classList.add('form-container');
-                const shapeName = shape['http://www.w3.org/2000/01/rdf-schema#label']?.[0]?.['@value'] || shape['@id'];
-                const title = document.createElement('h2');
-                title.textContent = shapeName;
-                formContainer.appendChild(title);
+        function createNewJsonObject(shapeId) {
+            let newJsonObject = {
+                "@type": "",
+                "properties": {}
+            };
 
-                const properties = shape['http://www.w3.org/ns/shacl#property'];
+            const matchingShape = expandedShapes.find(shape => shape['@id'] === `http://www.toronto.ca/TWONTO#${shapeId}_defaultShape`);
+
+            if (matchingShape) {
+                newJsonObject["@type"] = matchingShape['@id'];
+                newJsonObject["properties"] = {};
+
+                const properties = matchingShape['http://www.w3.org/ns/shacl#property'];
                 if (properties) {
                     properties.forEach(propertyRef => {
                         const property = allFields.find(node => node['@id'] === propertyRef['@id']);
                         if (property) {
                             const path = property['http://www.w3.org/ns/shacl#path']?.[0]?.['@id'] || '';
-                            const name = property['http://www.w3.org/ns/shacl#name']?.[0]?.['@value'] || path;
-                            const formGroup = document.createElement('div');
-                            formGroup.classList.add('form-group');
-
-                            const label = document.createElement('label');
-                            label.setAttribute('for', path);
-                            label.textContent = name;
-                            formGroup.appendChild(label);
-
-                            const shIn = property['http://www.w3.org/ns/shacl#in'];
-                            if (shIn && shIn[0]['@list']) {
-                                const select = document.createElement('select');
-                                select.setAttribute('id', path);
-                                select.setAttribute('name', path);
-                                shIn[0]['@list'].forEach(optionValue => {
-                                    const option = document.createElement('option');
-                                    option.setAttribute('value', optionValue['@value']);
-                                    option.textContent = optionValue['@value'];
-                                    select.appendChild(option);
-                                });
-                                formGroup.appendChild(select);
-                            } else {
-                                const class_name = property['http://www.w3.org/ns/shacl#class']?.[0]?.['@id'] || '';
-                                const input = document.createElement('input');
-                                input.setAttribute('type', 'text');
-                                input.setAttribute('id', class_name);
-                                input.setAttribute('name', class_name);
-                                formGroup.appendChild(input);
-				if (property['http://www.w3.org/ns/shacl#node']?.[0]?.['@id']){
-						var type1 = property['http://www.w3.org/ns/shacl#node']?.[0]?.['@id']
-						var lst = []
-						if (type1 == "http://www.toronto.ca/TWONTO#surfaceAreaSpec_nodeShape"){
-							lst = [ "cm^2", "mile^2", "m^2", "km^2", "inch^2", "ft^2"] 
-						} else if (type1 == "http://www.toronto.ca/TWONTO#temperatureSpec_nodeShape"){
-							lst = ["degC", "degK", "degF"]
-						} else if (type1 == "http://www.toronto.ca/TWONTO#holdingCapacitySpec_nodeShape"){
-							lst = ["ft^3","L","m^3"]
-						} else if (type1 == "http://www.toronto.ca/TWONTO#pressureSpec_nodeShape"){
-							lst = ["bar", "psi", "kPa"]
-						}
-						
-						const select2 = document.createElement('select');
-	        	                        select2.setAttribute('id', path + "uom");
-        	        	                select2.setAttribute('name', path + "uom");
-                        	   	    	lst.forEach(optionValue => {
-                                	    		const option = document.createElement('option');
-                                    			option.setAttribute('value', optionValue);
-                                    			option.textContent = optionValue
-                                    			select2.appendChild(option);
-                             
-						});
-						if (lst.length > 0){
-                                			formGroup.appendChild(select2);	
-						}
-                           	} 
-			   }
-
-                            formContainer.appendChild(formGroup);
+                            const defaultValue = getDefaultPropertyValue(property);
+                            newJsonObject["properties"][path] = defaultValue;
                         }
                     });
                 }
-
-                formsContainer.appendChild(formContainer);
+            } else {
+                console.warn(`No matching shape found for shapeId: ${shapeId}`);
             }
+
+            return newJsonObject;
+        }
+
+        function getDefaultPropertyValue(property) {
+            const dataType = property['http://www.w3.org/ns/shacl#datatype']?.[0]?.['@id'];
+            let defaultValue = "default_value";
+
+            if (dataType === "http://www.w3.org/2001/XMLSchema#integer") {
+                defaultValue = 0;
+            } else if (dataType === "http://www.w3.org/2001/XMLSchema#decimal") {
+                defaultValue = 0.0;
+            } else if (dataType === "http://www.w3.org/2001/XMLSchema#string") {
+                defaultValue = "";
+            }
+
+            return defaultValue;
         }
 
         function writeData(data) {
@@ -281,9 +195,15 @@
             reader.readAsText(file);
         }
 
-        function updateCell() {
-            currentFormData = JSON.parse(document.getElementById('w3review').value);
-            populateForm(currentFormData);
+        function parseSHACL(jsonldContent) {
+            jsonld.expand(jsonldContent, (err, expanded) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                allFields = expanded;
+                expandedShapes = expanded.filter(node => node['@type'] && node['@type'].includes('http://www.w3.org/ns/shacl#NodeShape'));
+            });
         }
 
         function handleFormFileSelect(event) {
@@ -294,18 +214,6 @@
                 populateForm(currentFormData);
             };
             reader.readAsText(file);
-        }
-
-        function parseSHACL(jsonldContent) {
-            jsonld.expand(jsonldContent, (err, expanded) => {
-                if (err) {
-                    console.error(err);
-                    return;
-                }
-		allFields = expanded;
-		console.log('expanded', expanded)
-                expandedShapes = expanded.filter(node => node['@type'] && node['@type'].includes('http://www.w3.org/ns/shacl#NodeShape'));
-            });
         }
 
         function populateForm(data) {
@@ -352,37 +260,9 @@
 
             try {
                 writeData(formData);
-                //addSubmissionToTable(docRef.id, formData);
             } catch (error) {
                 console.error('Error adding document: ', error);
             }
-        }
-
-        async function loadSubmissions() {
-            const tableBody = document.getElementById('submissionsTable').querySelector('tbody');
-            tableBody.innerHTML = '';
-
-            try {
-                const querySnapshot = await db.collection('submissions').get();
-                querySnapshot.forEach(doc => {
-                    addSubmissionToTable(doc.id, doc.data());
-                });
-            } catch (error) {
-                console.error('Error getting documents: ', error);
-            }
-        }
-
-        function addSubmissionToTable(id, data) {
-            const tableBody = document.getElementById('submissionsTable').querySelector('tbody');
-            const row = document.createElement('tr');
-            row.addEventListener('click', () => populateForm(data));
-            const idCell = document.createElement('td');
-            idCell.textContent = id;
-            const jsonCell = document.createElement('td');
-            jsonCell.textContent = JSON.stringify(data);
-            row.appendChild(idCell);
-            row.appendChild(jsonCell);
-            tableBody.appendChild(row);
         }
 
         function exportTableToExcel() {
@@ -393,4 +273,3 @@
     </script>
 </body>
 </html>
-
