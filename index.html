@@ -122,51 +122,59 @@
             Excel.run(function (context) {
                 var sheet = context.workbook.worksheets.getActiveWorksheet();
                 var range = sheet.getRange(event.address);
-		var selectedRange = sheet.getRange(event.address)
+		        var selectedRange = sheet.getRange(event.address)
                	selectedRange.load(["address", "rowCount", "columnCount", "values"]);
 		return context.sync().then(function () {
                 	range.load("values");
-			var columnMRange = sheet.getRange("M" + (selectedRange.address[7]))
-	        	columnMRange.load("values");
-			console.log(columnMRange)
+			        var columnMRange = sheet.getRange("M" + (selectedRange.address[7]))
+	        	    columnMRange.load("values");
+                    var columnXRange = sheet.getRange("X" + (selectedRange.address[7]))
+			        console.log(columnMRange)
+                    columnXRange.load("values");
+
                 	return context.sync().then(function () {
                     	var shapeId = columnMRange.values[0][0];  // Value in column 
 			console.log("Shape ID", shapeId)
 		    	if (shapeId) {
+                            if (!columnXRange.values[0][0] && shapeId) {
+                                var newJsonObject = createNewJsonObject(shapeId);
+                                columnXRange.values = [[JSON.stringify(newJsonObject)]];
+                                return context.sync();
+                            }
                         	var jsonData = JSON.parse(selectedRange.values[0][0]);
-				console.log('json data', jsonData)
-				if (shapeId.toLowerCase() === 'boiler') {
-                               		renderSpecificShape("http://www.toronto.ca/TWONTO#Boiler_defaultShape");
-                        	} else if (shapeId.toLowerCase() === 'motor') {
-                                	renderSpecificShape("http://www.toronto.ca/TWONTO#Motor_defaultShape");
-                        	} else if (shapeId.toLowerCase() === 'UPS') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#UPS_defaultShape");
-                        	} else if (shapeId.toLowerCase() === 'generator') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#Generator_defaultShape");
-                        	} else if (shapeId.toLowerCase() === 'compressor') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#Compressor_defaultShape");
-                        	}				
-				else if (shapeId.toLowerCase() === 'blower') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#Blower_defaultShape");
-                        	}
-				else if (shapeId.toLowerCase() === 'HVAC') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#HVAC_defaultShape");
-                        	}
-				else if (shapeId.toLowerCase() === 'transformer') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#transformer_defaultShape");
-                        	}
-				else if (shapeId.toLowerCase() === 'starter') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#Starter_defaultShape");
-                        	}
-				else if (shapeId.toLowerCase() === 'valve') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#Valve_defaultShape");
-                        	}
-				else if (shapeId.toLowerCase() === 'pump') {
-                        		renderSpecificShape("http://www.toronto.ca/TWONTO#PumpSet_defaultShape");
-                        	}
-                        	populateForm(jsonData);
-                        	//renderSpecificShape(shapeId);
-                    }
+                        console.log('json data', jsonData)
+                        if (shapeId.toLowerCase() === 'boiler') {
+                                            renderSpecificShape("http://www.toronto.ca/TWONTO#Boiler_defaultShape");
+                                    } else if (shapeId.toLowerCase() === 'motor') {
+                                            renderSpecificShape("http://www.toronto.ca/TWONTO#Motor_defaultShape");
+                                    } else if (shapeId.toLowerCase() === 'UPS') {
+                                        renderSpecificShape("http://www.toronto.ca/TWONTO#UPS_defaultShape");
+                                    } else if (shapeId.toLowerCase() === 'generator') {
+                                        renderSpecificShape("http://www.toronto.ca/TWONTO#Generator_defaultShape");
+                                    } else if (shapeId.toLowerCase() === 'compressor') {
+                                        renderSpecificShape("http://www.toronto.ca/TWONTO#Compressor_defaultShape");
+                                    }				
+                        else if (shapeId.toLowerCase() === 'blower') {
+                                        renderSpecificShape("http://www.toronto.ca/TWONTO#Blower_defaultShape");
+                                    }
+                        else if (shapeId.toLowerCase() === 'HVAC') {
+                                        renderSpecificShape("http://www.toronto.ca/TWONTO#HVAC_defaultShape");
+                                    }
+                        else if (shapeId.toLowerCase() === 'transformer') {
+                                        renderSpecificShape("http://www.toronto.ca/TWONTO#transformer_defaultShape");
+                                    }
+                        else if (shapeId.toLowerCase() === 'starter') {
+                                        renderSpecificShape("http://www.toronto.ca/TWONTO#Starter_defaultShape");
+                                    }
+                        else if (shapeId.toLowerCase() === 'valve') {
+                                        renderSpecificShape("http://www.toronto.ca/TWONTO#Valve_defaultShape");
+                                    }
+                        else if (shapeId.toLowerCase() === 'pump') {
+                                        renderSpecificShape("http://www.toronto.ca/TWONTO#PumpSet_defaultShape");
+                                    }
+                                    populateForm(jsonData);
+                                    //renderSpecificShape(shapeId);
+                            } 
                 });
 				});
             	}).catch(function (error) {
