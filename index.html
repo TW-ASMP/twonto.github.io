@@ -83,8 +83,11 @@
 
     <div id="forms"></div>
 
+    
 
     <div class="buttons">
+        <button id="add_rows">Add Row</button>
+        <button id="trim_table">Trim Table</button>
         <button id="submitButton">Submit Form</button>
         <button id="exportButton">Export Completed Form</button>
         <button id="exportExcelButton">Export Table to Excel</button>
@@ -112,7 +115,9 @@
             }
         });
 	document.addEventListener("DOMContentLoaded", function() {
-			                document.getElementById('fileInput').addEventListener('change', handleFileSelect, false);
+                            document.getElementById('add_rows').addEventListener('click', add_Rows, false);
+                            document.getElementById('trim_table').addEventListener('click', trim_Table, false);
+                            document.getElementById('fileInput').addEventListener('change', handleFileSelect, false);
 			                document.getElementById('formFileInput').addEventListener('change', handleFormFileSelect, false);
 			                document.getElementById('submitButton').addEventListener('click', submitForm, false);
 			                document.getElementById('exportButton').addEventListener('click', exportForm, false);
@@ -450,6 +455,78 @@
             const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
             XLSX.writeFile(wb, 'submissions.xlsx');
         }
+
+        async function add_Rows() {
+            await Excel.run(async (context) => {
+                const sheet = context.workbook.worksheets.getActiveWorksheet();
+
+                let table = sheet.tables.getItemAt(0);
+                table.load("rows");
+
+                await context.sync(); // Ensure rows are loaded before accessing them
+
+                for (let i = 0; i < 5; i++) {
+                // Add a new row
+                table.rows.add();
+
+                // Sync the context to ensure the new row is added
+                await context.sync();
+
+                // Reload the rows after adding a new row
+                table.load("rows");
+                await context.sync();
+
+                // Get the index of the newly added row
+                let rowCount = table.rows.items.length;
+                let newRowRange = table.rows.getItemAt(rowCount - 1).getRange();
+
+                // Clear the contents of the newly added row
+                newRowRange.clear(Excel.ClearApplyTo.contents);
+
+                // Sync the context to apply the changes
+                await context.sync();
+                }
+                await context.sync();
+            });
+            }
+
+            async function trim_Table() {
+                await Excel.run(async (context) => {
+                    const sheet = context.workbook.worksheets.getActiveWorksheet();
+
+                    let table = sheet.tables.getItemAt(0);
+
+                    table.rows.load("values");
+
+                    return context.sync().then(function() {
+                    // Iterate through the rows in reverse order
+                    for (var i = table.rows.items.length - 1; i >= 0; i--) {
+                        var row = table.rows.items[i];
+                        var isEmpty = row.values[0].every(function(cell) {
+                        return cell === null || cell === "";
+                        });
+
+                        // If the row is empty, remove it
+                        if (isEmpty) {
+                        table.rows.getItemAt(i).delete();
+                        }
+                    }
+                    // Sync the context to apply the changes
+                    return context.sync();
+                    });
+                });
+                }
+
+            /** Default helper for invoking an action and handling errors. */
+            async function tryCatch(callback) {
+                try {
+                await callback();
+                } catch (error) {
+                // Note: In a production add-in, you'd want to notify the user through your add-in's UI.
+                console.error(error);
+                }
+            }
+
     </script>
 </body>
 </html>
