@@ -139,7 +139,31 @@
                                		renderSpecificShape("http://www.toronto.ca/TWONTO#Boiler_defaultShape");
                         	} else if (shapeId.toLowerCase() === 'motor') {
                                 	renderSpecificShape("http://www.toronto.ca/TWONTO#Motor_defaultShape");
-                        	}		
+                        	} else if (shapeId.toLowerCase() === 'UPS') {
+                        		renderSpecificShape("http://www.toronto.ca/TWONTO#UPS_defaultShape");
+                        	} else if (shapeId.toLowerCase() === 'generator') {
+                        		renderSpecificShape("http://www.toronto.ca/TWONTO#Generator_defaultShape");
+                        	} else if (shapeId.toLowerCase() === 'compressor') {
+                        		renderSpecificShape("http://www.toronto.ca/TWONTO#Compressor_defaultShape");
+                        	}				
+				else if (shapeId.toLowerCase() === 'blower') {
+                        		renderSpecificShape("http://www.toronto.ca/TWONTO#Blower_defaultShape");
+                        	}
+				else if (shapeId.toLowerCase() === 'HVAC') {
+                        		renderSpecificShape("http://www.toronto.ca/TWONTO#HVAC_defaultShape");
+                        	}
+				else if (shapeId.toLowerCase() === 'transformer') {
+                        		renderSpecificShape("http://www.toronto.ca/TWONTO#transformer_defaultShape");
+                        	}
+				else if (shapeId.toLowerCase() === 'starter') {
+                        		renderSpecificShape("http://www.toronto.ca/TWONTO#Starter_defaultShape");
+                        	}
+				else if (shapeId.toLowerCase() === 'valve') {
+                        		renderSpecificShape("http://www.toronto.ca/TWONTO#Valve_defaultShape");
+                        	}
+				else if (shapeId.toLowerCase() === 'pump') {
+                        		renderSpecificShape("http://www.toronto.ca/TWONTO#PumpSet_defaultShape");
+                        	}
                         	populateForm(jsonData);
                         	//renderSpecificShape(shapeId);
                     }
