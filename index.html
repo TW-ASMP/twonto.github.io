@@ -346,6 +346,58 @@
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
         }
+        function createNewJsonObject(shapeId) {
+            // Create a new JSON object based on the shapeId, referencing SHACL shapes
+            let newJsonObject = {
+                "@type": "", // Placeholder for the shape type
+                "properties": {} // Placeholder for asset-specific properties
+            };
+
+            // Find the shape in expandedShapes by matching the shapeId (URLs in this case)
+            const matchingShape = expandedShapes.find(shape => shape['@id'] === `http://www.toronto.ca/TWONTO#${shapeId}_defaultShape`);
+            
+            if (matchingShape) {
+                newJsonObject["@type"] = matchingShape['@id'];
+                newJsonObject["properties"] = {};
+
+                // Loop through the properties of the matching shape
+                const properties = matchingShape['http://www.w3.org/ns/shacl#property'];
+                if (properties) {
+                    properties.forEach(propertyRef => {
+                        // Find the property details in allFields using the property reference ID
+                        const property = allFields.find(node => node['@id'] === propertyRef['@id']);
+                        if (property) {
+                            const path = property['http://www.w3.org/ns/shacl#path']?.[0]?.['@id'] || '';
+                            const defaultValue = getDefaultPropertyValue(property); // Function to get default value
+                            newJsonObject["properties"][path] = defaultValue;
+                        }
+                    });
+                }
+            } else {
+                console.warn(`No matching shape found for shapeId: ${shapeId}`);
+            }
+
+            return newJsonObject;
+        }
+
+        function getDefaultPropertyValue(property) {
+            // This function determines the default value for a property based on the property definition
+            // Placeholder logic to return a default value, you can customize this as needed
+            const dataType = property['http://www.w3.org/ns/shacl#datatype']?.[0]?.['@id'];
+            let defaultValue = "default_value";
+
+            // Customize default values based on property type or data type (examples)
+            if (dataType === "http://www.w3.org/2001/XMLSchema#integer") {
+                defaultValue = 0;
+            } else if (dataType === "http://www.w3.org/2001/XMLSchema#decimal") {
+                defaultValue = 0.0;
+            } else if (dataType === "http://www.w3.org/2001/XMLSchema#string") {
+                defaultValue = "";
+            }
+
+            return defaultValue;
+        }
+
 
         async function submitForm() {
             const forms = document.querySelectorAll('.form-container');
