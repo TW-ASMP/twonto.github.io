@@ -142,7 +142,7 @@
 			console.log("Shape ID", shapeId)
 		    	if (shapeId) {
                             if (!columnXRange.values[0][0] && shapeId) {
-                                var newJsonObject = createNewJsonObject(shapeId)["properties"];
+                                var newJsonObject = createNewJsonObject(shapeId);
                                 columnXRange.values = [[JSON.stringify(newJsonObject)]];
                                 return context.sync();
                             }
@@ -382,7 +382,7 @@
                 console.warn(`No matching shape found for shapeId: ${shapeId}`);
             }
 
-            return newJsonObject;
+            return newJsonObject["properties"];
         }
 
         function getDefaultPropertyValue(property) {
