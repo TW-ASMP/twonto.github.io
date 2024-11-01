@@ -221,6 +221,7 @@
                                 const select = document.createElement('select');
                                 select.setAttribute('id', path);
                                 select.setAttribute('name', path);
+				select.selectedIndex = -1;
                                 shIn[0]['@list'].forEach(optionValue => {
                                     const option = document.createElement('option');
                                     option.setAttribute('value', optionValue['@value']);
